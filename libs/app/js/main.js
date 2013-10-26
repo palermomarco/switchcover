@@ -5,7 +5,7 @@ var FB_UID = null;
 var PAGES_LIST = null;
 var PAGE_SELECTED = null;
 var COVER_PROGRAMMED = {};
-var BASE_PATH = "http://liveflow.in/switchcover"
+var BASE_PATH = "/";
 
 function require_fb_login() {
     $('.only_login').show();

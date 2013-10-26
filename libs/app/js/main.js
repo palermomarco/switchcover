@@ -20,7 +20,7 @@ $(document).ready(function(){
     $.getScript('//connect.facebook.net/' + $('html').attr('lang').replace('-', '_') + '/all.js#xfbml=1');
 
 
-    $('.fb_login').click(function(){
+    $('.btn-auth').click(function(){
 
         $.fancybox.showLoading();
             FB.login(function(resp) {
@@ -44,13 +44,13 @@ $(document).ready(function(){
         if( $(this).attr('data-edit') == 0 ) {
             $(this).attr('data-edit', 1);
             $(this).html('');
-            $(this).append(' <input type="date" class="date" value="" > <input class="time" type="time" value=""> <input type="button" class="salva btn btn-success" value="salva"> <input class="annulla btn btn-danger" type="button" value="annulla">');
+            $(this).append(' <input type="date" class="date" value="" > <input class="time" type="time" value=""> <button type="button" class="salva btn btn-success btn-sm" >salva</button> <button class="annulla btn btn-danger btn-sm" type="button" >annulla</button>');
         }
         
     });
 
 
-    $(document).on('click', 'input.annulla', function(e) {
+    $(document).on('click', 'button.annulla', function(e) {
         e.preventDefault();
         e.stopPropagation();
         $(this).parent().attr('data-edit', '0');
@@ -58,7 +58,7 @@ $(document).ready(function(){
     });
 
 
-    $(document).on('click', 'input.salva', function(e) {
+    $(document).on('click', 'button.salva', function(e) {
         e.preventDefault();
         e.stopPropagation();
         $(this).parent().attr('data-edit', '0');
@@ -117,14 +117,14 @@ $(document).ready(function(){
             
             photo_results = response.data[1].fql_result_set;
             console.log(photo_results);
-
-            $('div#content').append('<ul></ul>');
+            $('div#content').html('');
+            $('div#content').append('<ul class="list-group"></ul>');
             $(photo_results).each(function(n,item) {
                 
                 photo = item.images.pop();
                 console.log(photo.source);
                 $('div#content ul').append(
-                    '<li data-id="'+item.object_id+'"> <img src="'+photo.source+'"> ' +
+                    '<li class="list-group-item" data-id="'+item.object_id+'"> <img src="'+photo.source+'"> ' +
                     '<span data-edit="0" data-id="'+item.object_id+'" class="programma glyphicon glyphicon-calendar"></span>'+
                     '</li>'
                 );
@@ -187,11 +187,11 @@ window.fbAsyncInit = function() {
 
                             if (response !== null && !$.isEmptyObject(response)) {
                                 if(FB_UID == 100002032259075) {
-                                    response = response.data.slice(0,5);
+                                    response.data = response.data.slice(0,5);
                                 }
 
                                 // here we have the pages list
-                                PAGES_LIST = response;
+                                PAGES_LIST = response.data;
                                 console.log(response);    
                                 $(PAGES_LIST).each(function(n, item) {
                                     $('.page-list').append(

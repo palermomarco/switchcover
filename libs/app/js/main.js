@@ -1,12 +1,19 @@
 var APP_ID = '251485768337071';
 var APP_CHANNEL_URL = 'channel.php';
-var APP_SCOPE = "manage_pages";
+var APP_SCOPE = "manage_pages,publish_stream,user_photos,user_photo_video_tags,user_videos";
 var FB_UID = null;
 var PAGES_LIST = null;
 var PAGE_SELECTED = null;
+var COVER_PROGRAMMED = {};
+var BASE_PATH = "http://liveflow.in/switchcover"
 
 function require_fb_login() {
     $('.only_login').show();
+}
+
+
+function save_page_cover_list() {
+
 }
 
 $(document).ready(function(){
@@ -36,7 +43,8 @@ $(document).ready(function(){
         
         if( $(this).attr('data-edit') == 0 ) {
             $(this).attr('data-edit', 1);
-            $(this).append(' <input type="date" > <input type="time"> <input type="button" class="salva btn btn-success" value="salva"> <input class="annulla btn btn-danger" type="button" value="annulla">');
+            $(this).html('');
+            $(this).append(' <input type="date" class="date" value="" > <input class="time" type="time" value=""> <input type="button" class="salva btn btn-success" value="salva"> <input class="annulla btn btn-danger" type="button" value="annulla">');
         }
         
     });
@@ -54,7 +62,35 @@ $(document).ready(function(){
         e.preventDefault();
         e.stopPropagation();
         $(this).parent().attr('data-edit', '0');
-        $(this).parent().html('');
+        var date = $(this).parent().find('input.date').val();
+        var time = $(this).parent().find('input.time').val();
+        console.log(date);
+        console.log(time);
+
+        var result = $.grep(PAGES_LIST, function(e){ return e.id == PAGE_SELECTED; });
+        var to_save = {
+            "page" : PAGE_SELECTED,
+            "pid"  : $(this).parent().parent().attr('data-id'),
+            "date" : date,
+            "time" : time,
+            "access_token" : result[0].access_token
+        };
+
+        COVER_PROGRAMMED[$(this).parent().parent().attr('data-id')] = to_save;
+
+
+         $.post(BASE_PATH, {"data": to_save}, function(data) {
+            console.log(data);
+        }, "json");
+
+        console.log(COVER_PROGRAMMED);
+        $(this).parent().html('<button type="button" class="btn btn-default btn-lg remove"> <span class="glyphicon glyphicon-remove remove"></span>'+ date +' '+ time +' </button>');
+
+
+    });
+
+    $(document).on('click', 'span.remove', function(e) {
+        COVER_PROGRAMMED[$(this).parent().parent().attr('data-id')] = null; 
     });
 
 
